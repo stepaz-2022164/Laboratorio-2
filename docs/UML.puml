@@ -1,0 +1,116 @@
+@startuml
+!define RECTANGLE class
+
+package "org.sergiotepaz.main" {
+    class Main {
+        - juegoMemoria: JuegoMemoria {static}
+        - scanner: Scanner {static}
+        - filasTablero: int {static}
+        - columnasTablero: int {static}
+        + main(args: String[]): void {static}
+        - mostrarLogin(): void {static}
+        - configurarTablero(): void {static}
+        - iniciarNuevaPartida(): void {static}
+        - mostrarTablero(): void {static}
+        - mostrarCartasSeleccionadas(): void {static}
+        - mostrarInformacionTurno(): void {static}
+        - procesarTurnoJugador(): boolean {static}
+        - mostrarFinJuego(): void {static}
+        - validarNumero(min: int, max: int): int {static}
+        - validarEntrada(texto: String): String {static}
+        - esperarTecla(): void {static}
+    }
+}
+
+package "org.sergiotepaz.model" {
+    class JuegoMemoria {
+        - jugador1: Jugador
+        - jugador2: Jugador
+        - jugadorActual: Jugador
+        - tablero: Tablero
+        - cartasSeleccionadas: ArrayList<Carta>
+        - juegoActivo: boolean
+        + JuegoMemoria(j1: Jugador, j2: Jugador, filasTablero: int, columnasTablero: int)
+        + seleccionarCarta(x: int, y: int): boolean
+        + procesarTurno(): void
+        - cambiarTurno(): void
+        + verificarFinJuego(): boolean
+        + obtenerGanador(): Jugador
+        + reiniciarJuego(): void
+        + reiniciarJuegoConNuevasDimensiones(filas: int, columnas: int): void
+        + getJugador1(): Jugador
+        + getJugador2(): Jugador
+        + getJugadorActual(): Jugador
+        + getTablero(): Tablero
+        + isJuegoActivo(): boolean
+        + getCartasSeleccionadas(): ArrayList<Carta>
+    }
+
+    class Jugador {
+        - nombre: String
+        - puntuacion: int
+        + Jugador(nombre: String)
+        + incrementarPuntuacion(): void
+        + reiniciarPuntuacion(): void
+        + getNombre(): String
+        + getPuntuacion(): int
+    }
+
+    class Tablero {
+        - cartas: Carta[][]
+        - filas: int
+        - columnas: int
+        - cartasEmparejadas: int
+        + Tablero(filas: int, columnas: int)
+        - inicializarCartas(): void
+        + obtenerCarta(x: int, y: int): Carta
+        + todasCartasEmparejadas(): boolean
+        + reiniciarTablero(): void
+        + incrementarCartasEmparejadas(): void
+        + getFilas(): int
+        + getColumnas(): int
+        + getCartas(): Carta[][]
+    }
+
+    class Carta {
+        - numero: int
+        - visible: boolean
+        - emparejada: boolean
+        - posicionX: int
+        - posicionY: int
+        + Carta(numero: int, x: int, y: int)
+        + revelar(): void
+        + ocultar(): void
+        + marcarEmparejada(): void
+        + esIgual(otraCarta: Carta): boolean
+        + puedeSerSeleccionada(): boolean
+        + getNumero(): int
+        + isVisible(): boolean
+        + isEmparejada(): boolean
+        + getPosicionX(): int
+        + getPosicionY(): int
+    }
+}
+
+' Relaciones
+Main --> JuegoMemoria : usa
+JuegoMemoria --> Jugador : tiene dos
+JuegoMemoria --> Tablero : contiene
+JuegoMemoria --> Carta : gestiona lista de
+Tablero --> Carta : contiene matriz de
+Jugador ..> JuegoMemoria : jugadorActual
+
+' Cardinalidades
+JuegoMemoria ||--|| Tablero
+JuegoMemoria ||--o{ Jugador : jugador1, jugador2
+JuegoMemoria ||--o{ Carta : cartasSeleccionadas
+Tablero ||--o{ Carta : cartas[][]
+
+' Notas
+note right of Main : Clase principal que maneja\nla interfaz de usuario\npor consola
+note right of JuegoMemoria : Controla la lógica\nprincipal del juego
+note right of Tablero : Administra la estructura\ndel juego con todas las cartas
+note right of Carta : Representa una carta\nindividual del tablero
+note right of Jugador : Almacena información\ndel jugador
+
+@enduml
